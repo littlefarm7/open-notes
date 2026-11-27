@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#f7f7f7" id="themeColor">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Open Notes</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ DRAWER ============ -->
+  <div id="scrim" class="scrim"></div>
+  <aside id="drawer" class="drawer" aria-label="Pastas">
+    <div class="drawer-head">
+      <button class="icon-btn" data-action="settings" title="Configurações" data-icon="settings"></button>
+    </div>
+    <nav id="drawerNav"></nav>
+  </aside>
+
+  <!-- ============ HOME ============ -->
+  <main id="home" class="view">
+    <div id="homeScroll" class="scroller">
+      <header class="hero">
+        <h1 id="heroTitle">Todas as notas</h1>
+        <p id="heroCount">0 notas</p>
+      </header>
+      <div id="homeBar" class="appbar sticky">
+        <div class="bar-normal">
+          <button class="icon-btn" data-action="drawer" title="Menu" data-icon="menu"></button>
+          <span class="bar-title" id="barTitle">Todas as notas</span>
+          <span class="spacer"></span>
+          <button class="icon-btn" data-action="search" title="Pesquisar" data-icon="search"></button>
+          <button class="icon-btn" data-action="home-more" title="Mais opções" data-icon="more"></button>
+        </div>
+        <div class="bar-search">
+          <button class="icon-btn" data-action="search-close" title="Voltar" data-icon="back"></button>
+          <input id="searchInput" type="search" placeholder="Pesquisar notas" autocomplete="off">
+        </div>
+        <div class="bar-select">
+          <label class="select-all"><input type="checkbox" id="selectAll"><span>Tudo</span></label>
+          <span class="bar-title" id="selectCount">Selecionar notas</span>
+          <span class="spacer"></span>
+          <button class="text-btn" data-action="select-cancel">Cancelar</button>
+        </div>
+      </div>
+      <div id="folderChips" class="chips"></div>
+      <div id="noteList" class="notes grid"></div>
+      <div id="emptyState" class="empty" hidden>
+        <div class="empty-ico" data-icon="note"></div>
+        <p>Nenhuma nota</p>
+        <small>Toque em + para criar uma nota.</small>
+      </div>
+    </div>
+    <button id="fab" class="fab" data-action="new-note" title="Nova nota" data-icon="newnote"></button>
+    <div id="selectBar" class="bottom-actions"></div>
+  </main>
+
+  <!-- ============ EDITOR ============ -->
+  <section id="editor" class="view editor" hidden>
+    <div class="appbar editor-bar">
+      <button class="icon-btn" data-action="editor-back" title="Voltar" data-icon="back"></button>
+      <span class="spacer"></span>
+      <button class="icon-btn" data-action="undo" title="Desfazer" data-icon="undo"></button>
+      <button class="icon-btn" data-action="redo" title="Refazer" data-icon="redo"></button>
+      <button class="icon-btn" data-action="toggle-fav" title="Favorito" data-icon="star" id="favBtn"></button>
+      <button class="icon-btn" data-action="editor-more" title="Mais opções" data-icon="more"></button>
+    </div>
+    <div class="tools" id="toolbar">
+      <button class="tool" data-tool="text" title="Teclado / Texto" data-icon="keyboard"></button>
+      <button class="tool" data-tool="pen" title="Caneta" data-icon="pen"></button>
+      <button class="tool" data-tool="highlighter" title="Marca-texto" data-icon="highlighter"></button>
+      <button class="tool" data-tool="eraser" title="Borracha" data-icon="eraser"></button>
+      <button class="tool" data-tool="lasso" title="Seleção" data-icon="lasso"></button>
+      <button class="tool" data-action="format" title="Estilo de texto" data-icon="textstyle"></button>
+      <button class="tool" data-action="insert" title="Inserir" data-icon="plusbox"></button>
+    </div>
+    <div class="subpanel" id="subpanel" hidden></div>
+
+    <div id="pageScroll" class="page-scroll">
+      <div id="page" class="page bg-plain">
+        <input id="noteTitle" class="note-title" placeholder="Título" maxlength="200" autocomplete="off">
+        <div class="note-meta" id="noteMeta"></div>
+        <div id="noteContent" class="note-content" contenteditable="true" spellcheck="true" data-placeholder="Escreva aqui..."></div>
+        <canvas id="ink" class="ink"></canvas>
+        <canvas id="inkLive" class="ink live"></canvas>
+        <div id="lassoBox" class="lasso-box" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section id="settings" class="view settings" hidden>
+    <div class="appbar">
+      <button class="icon-btn" data-action="settings-back" title="Voltar" data-icon="back"></button>
+      <span class="bar-title show">Configurações</span>
+    </div>
+    <div class="scroller" id="settingsBody"></div>
+  </section>
+
+  <div id="layer"></div>
+  <div id="toast" class="toast"></div>
+  <input type="file" id="fileImage" accept="image/*" multiple hidden>
+  <input type="file" id="fileCamera" accept="image/*" capture="environment" hidden>
+  <input type="file" id="fileBackup" accept=".json,application/json" hidden>
+  <input type="file" id="fileText" accept=".txt,text/plain" hidden>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/db.js"></script>
+<script src="js/crypto.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/ink.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
